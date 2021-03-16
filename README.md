@@ -1,17 +1,17 @@
 # clojure.log4j2
 
-When clojure.tools.logging is too String based for your logging needs
+When clojure.tools.logging is not enough
 
 # Goals
 
 * use Java logging lib, so JUL,JCL,log4j etc etc all get logged with the same config
-* log data, and optionally strings
+* log data. and optionally strings
 * avoid varargs/positional-args confusion in API with Throwable etc
-* bit of help with programmatic config, so avoid need for xml files
+* bit of help with programmatic config, as alternative to xml files
 
 # Rationale
 
-'Log data, not strings' is a thing, but of all the Java Logging frameworks, log4j2 is the 
+'Log data, not strings' is a thing, but of all the Java Logging frameworks, [log4j2](https://logging.apache.org/log4j/2.x/) is the 
 only one that seems to deliver on that. In all logging frameworks you can format messages as
 json or something and get `{level: "INFO", message "bar"}`, but what is different with log4j2
 is that you can log arbitrary data and have that data passed as-is to appenders. So the console
@@ -19,8 +19,8 @@ appender might format that data as JSON, but the mongo appender will persist a m
 created directly from the data, not a string representation of it.
 
 [clojure.tool.logging](https://github.com/clojure/tools.logging) can route log statements
-through many java logging systems including log4j2. However, it converts the args to log
-functions to strings before calling underlying impls so it is not suitable for logging data.
+through many java logging systems including log4j2. However, the args to log
+functions are stringified before calling the underlying impl so it is not suitable for logging data.
 
 # Usage
 
