@@ -2,6 +2,9 @@
 
 When clojure.tools.logging is not enough
 
+
+[![Clojars Project](https://img.shields.io/clojars/v/com.widdindustries/clojure.log4j2.svg)](https://clojars.org/com.widdindustries/clojure.log4j2)
+
 # Features
 
 * legacy Java logging libs work, so JUL,JCL,log4j etc etc all get logged with the same config
@@ -20,7 +23,7 @@ is that you can log arbitrary data and have that data passed as-is to appenders,
 appender might format that data as JSON, but the mongo appender will persist a mongo object 
 created directly from the data, not a string representation of it.
 
-[clojure.tool.logging](https://github.com/clojure/tools.logging) can route log statements
+[clojure.tools.logging](https://github.com/clojure/tools.logging) can route log statements
 through many java logging systems including log4j2. However, the args to log
 functions are stringified before calling the underlying impl so it is not suitable for logging data.
 
@@ -79,7 +82,7 @@ Configure logger before logging
 
 ```
 
-=== Release
+## Release
 
 create a git tag.
 
