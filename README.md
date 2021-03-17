@@ -9,10 +9,13 @@ When clojure.tools.logging is not enough
 * avoid varargs/positional-args confusion in API with Throwable etc
 * bit of help with programmatic config, as alternative to xml files
 
+& more a 'nice to have' - but I don't want to have to move 
+away from clojure.tools.logging overnight
+
 # Rationale
 
 'Log data, not strings' is a thing, but of all the Java Logging frameworks, [log4j2](https://logging.apache.org/log4j/2.x/) is the 
-only one that seems to deliver on that. In all logging frameworks you can format messages as
+only one that actually does that. In all logging frameworks you can format messages as
 json or something and get `{level: "INFO", message "bar"}`, but what is different with log4j2
 is that you can log arbitrary data and have that data passed as-is to appenders. So the console
 appender might format that data as JSON, but the mongo appender will persist a mongo object 
@@ -21,6 +24,8 @@ created directly from the data, not a string representation of it.
 [clojure.tool.logging](https://github.com/clojure/tools.logging) can route log statements
 through many java logging systems including log4j2. However, the args to log
 functions are stringified before calling the underlying impl so it is not suitable for logging data.
+
+The same limitation also exists in pedestal.log
 
 # Usage
 
@@ -34,7 +39,7 @@ functions are stringified before calling the underlying impl so it is not suitab
 ;log string
 (log/info "hello")
 
-;log a Message (data)
+;log a Message - this is how you 'log data'
 (log/info (MapMessage. {"foo" "bar"}))
 
 ; varargs formatted string

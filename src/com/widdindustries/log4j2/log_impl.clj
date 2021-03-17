@@ -7,7 +7,7 @@
 (defn log-builder* ^LogBuilder [^Logger logger ^Level level]
   (.atLevel logger level))
 
-(defn context [] (LogManager/getContext false))
+(defn context [] ^LoggerContext (LogManager/getContext false))
 
 (defn get-logger [^LoggerContext context logger-ns]
   (.getLogger context ^String (str logger-ns)))

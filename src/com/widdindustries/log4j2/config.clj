@@ -1,11 +1,12 @@
 (ns com.widdindustries.log4j2.config
   "some snippets for setting up logging programmatically. 
   optional to use, and not meant to be comprehensive"
+  (:require [com.widdindustries.log4j2.log-impl :as log-impl])
   (:import [org.apache.logging.log4j LogManager Logger Level]
            (org.apache.logging.log4j.core.config.builder.api ConfigurationBuilderFactory ConfigurationBuilder)
            (org.apache.logging.log4j.core.appender ConsoleAppender ConsoleAppender$Target)
            (org.apache.logging.log4j.core.config Configurator)
-           (org.apache.logging.log4j.core LoggerContext)))
+           (org.apache.logging.log4j.core LoggerContext Appender)))
 
 (defn builder [& [config-name status-level]]
   (-> (ConfigurationBuilderFactory/newConfigurationBuilder)
@@ -14,6 +15,9 @@
 
 (defn start ^LoggerContext [^ConfigurationBuilder builder]
   (Configurator/initialize (ClassLoader/getSystemClassLoader) (.build builder) nil))
+
+(defn stop [^LoggerContext context]
+  (Configurator/shutdown context))
 
 (defn std-out-appender [builder appender-name pattern]
   (-> builder
@@ -30,42 +34,44 @@
   (->
     (.newLogger builder logger-name level)
     (.add (.newAppenderRef builder ref))
-    ;(.addAttribute "additivity", false)
-    ))
+    (.addAttribute "additivity", false)))
 
-(comment
-  (let [builder (builder)
-        std-out-appender-name "Stdout"]
-    (-> builder
-        (.add (std-out-appender builder std-out-appender-name
-                "%date %level %logger %message%n%throwable"))
-        (.add (root-logger builder Level/INFO std-out-appender-name))
-        (.add (logger builder Level/INFO std-out-appender-name "org.apache.logging.log4j"))
-        (.writeXmlConfiguration  System/out)
-        ;(start)
-        ))
+(defn get-appenders 
+  ([] (get-appenders (log-impl/context)))
+  ([^LoggerContext context]
+   (let [config (-> context
+                    (.getConfiguration))
+         logger (-> config (.getRootLogger))]
+     (-> logger
+         (.getAppenders)))))
 
-  (-> (LogManager/getContext true)
-      (.getConfiguration)
-      (.getLoggers))
+(defn remove-all-appenders
+  ([] (remove-all-appenders (log-impl/context)))
+  ([^LoggerContext context]
+   (doseq [[n _] (get-appenders context)]
+     (println "removing.." n)
+     (.removeAppender logger n))))
 
-  (def logger (LogManager/getLogger "com.widdindustries.config"))
-  (.log logger Level/INFO "hello")
-  (.log logger Level/ERROR (MapMessage. {"foo" "bar"}))
+(defn get-loggers [context]
+  (-> (vec (.getLoggers context))
+      (conj (.getRootLogger context))))
 
-  )
-;builder.add(
-;             builder.newFilter("ThresholdFilter", Filter.Result.ACCEPT, Filter.Result.NEUTRAL)
-;             .addAttribute("level", Level.DEBUG));
+(defn add-appender-to-running-context
+  ([appender] (add-appender-to-running-context appender (log-impl/context)))
+  ([^Appender appender ^LoggerContext context]
+   (do
+     (.start appender)
+     (-> (.getConfiguration context)
+         (.addAppender appender))
+     (doseq [logger (get-loggers context)]
+       (.addAppender logger (-> (.getConfiguration context)
+                           (.getAppender (.getName appender)))))
+     (.updateLoggers context))))
 
-
-;appenderBuilder.add(builder.newFilter("MarkerFilter", Filter.Result.DENY, Filter.Result.NEUTRAL)
-;                     .addAttribute("marker", "FLOW"));
-
-
-;builder.add(builder.newLogger("org.apache.logging.log4j", Level.DEBUG)
-;             .add(builder.newAppenderRef("Stdout")).addAttribute("additivity", false))
-
-
-
-
+(defn context->data
+  ([] (context->data (log-impl/context)))
+  ([context]
+   (->> (get-loggers context)
+        (map (fn [l]
+               [(.getName l) (.getAppenders l)]))
+        (into {}))))
