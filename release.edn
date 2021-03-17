@@ -1,0 +1,3 @@
+{:group-id "com.widdindustries"
+ :artifact-id "clojure.log4j2"
+ :scm-url "https://github.com/henryw374/clojure.log4j2"}
