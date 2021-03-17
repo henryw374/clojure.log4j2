@@ -2,22 +2,21 @@
 
 When clojure.tools.logging is not enough
 
-# Goals
+# Features
 
-* use Java logging lib, so JUL,JCL,log4j etc etc all get logged with the same config
-* log data. and optionally strings
-* avoid varargs/positional-args confusion in API with Throwable etc
+* legacy Java logging libs work, so JUL,JCL,log4j etc etc all get logged with the same config
+* log data (clojure maps & [more](https://logging.apache.org/log4j/2.x/manual/messages.html)). and optionally strings
+* use [builder api](https://logging.apache.org/log4j/2.x/manual/logbuilder.html) avoid varargs/positional-args confusion in API with Throwable etc
 * bit of help with programmatic config, as alternative to xml files
-
-& more a 'nice to have' - but I don't want to have to move 
-away from clojure.tools.logging overnight
+* clojure.tools.logging still works.. so you don't have to move off it in one go
 
 # Rationale
 
 'Log data, not strings' is a thing, but of all the Java Logging frameworks, [log4j2](https://logging.apache.org/log4j/2.x/) is the 
 only one that actually does that. In all logging frameworks you can format messages as
 json or something and get `{level: "INFO", message "bar"}`, but what is different with log4j2
-is that you can log arbitrary data and have that data passed as-is to appenders. So the console
+is that you can log arbitrary data and have that data passed as-is to appenders, such as 
+[nosql appenders](https://logging.apache.org/log4j/2.x/manual/appenders.html#NoSQLAppender). So the console
 appender might format that data as JSON, but the mongo appender will persist a mongo object 
 created directly from the data, not a string representation of it.
 
@@ -42,6 +41,9 @@ The same limitation also exists in pedestal.log
 ;log a Message - this is how you 'log data'
 (log/info (MapMessage. {"foo" "bar"}))
 
+;clojure maps wrapped in MapMessage object
+(log/info {"foo" "bar"})
+
 ; varargs formatted string
 (log/info "hello {} there" :foo)
 
@@ -50,12 +52,11 @@ The same limitation also exists in pedestal.log
     (log/with-location)
     (log/with-throwable *e)
     ; finally log string or Message etc
-    (log/log "foo"))
+    (log/log {"foo" "bar"}))
 ```
-
 ## Config
 
-This is optional. You can configure log4j2 with xml etc as you like, but if you prefer
+Configure log4j2 with xml etc as you like, but if you prefer
 to do it programmatically, there is a little sugar in this lib that might help a bit.
 
 Configure logger before logging
@@ -77,6 +78,16 @@ Configure logger before logging
         (config/start))))
 
 ```
+
+=== Release
+
+create a git tag.
+
+`make install VERSION=your-tag` (this installs in ~/.m2 - check that things look ok)
+
+`make deploy VERSION=your-tag`  - you need to have set up clojars credentials as per https://github.com/applied-science/deps-library
+
+`git push origin new-tag-name`
 
 # References
 

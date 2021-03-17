@@ -1,8 +1,9 @@
 (ns com.widdindustries.log4j2.log-api
   (:require [com.widdindustries.log4j2.log-impl :as impl])
-  (:import [org.apache.logging.log4j.message Message]
+  (:import [org.apache.logging.log4j.message Message MapMessage]
            [org.apache.logging.log4j Logger LogBuilder Level LogManager Marker]
-           [org.apache.logging.log4j.util Supplier]))
+           [org.apache.logging.log4j.util Supplier]
+           (java.util Map)))
 
 (set! *warn-on-reflection* true)
 
@@ -16,9 +17,11 @@
 (defn log
   ([^LogBuilder builder thing]
    (cond
-     (instance? Message thing) (.log builder ^Message thing)
-     (instance? Supplier thing) (.log builder ^Supplier thing)
      (instance? String thing) (.log builder ^String thing)
+     (instance? Message thing) (.log builder ^Message thing)
+     (instance? Map thing) (.log builder ^Message (MapMessage. ^Map thing))
+     (instance? Supplier thing) (.log builder ^Supplier thing)
+
      :else (.log builder ^Object thing)))
   ([^LogBuilder builder ^String thing [x & _xs :as args]]
    (println args)

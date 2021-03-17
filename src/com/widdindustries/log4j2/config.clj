@@ -6,7 +6,10 @@
            (org.apache.logging.log4j.core.config.builder.api ConfigurationBuilderFactory ConfigurationBuilder)
            (org.apache.logging.log4j.core.appender ConsoleAppender ConsoleAppender$Target)
            (org.apache.logging.log4j.core.config Configurator)
-           (org.apache.logging.log4j.core LoggerContext Appender)))
+           (org.apache.logging.log4j.core LoggerContext Appender)
+           [org.apache.logging.log4j.status StatusLogger]))
+
+(def status-logger (StatusLogger/getLogger))
 
 (defn builder [& [config-name status-level]]
   (-> (ConfigurationBuilderFactory/newConfigurationBuilder)
@@ -36,37 +39,45 @@
     (.add (.newAppenderRef builder ref))
     (.addAttribute "additivity", false)))
 
+(defn get-loggers
+  ([] (get-loggers (log-impl/context)))
+  ([context]
+   (->> (.getLoggers (.getConfiguration context))
+        keys
+        (map (fn [logger-name]
+               (.getLogger context logger-name))))))
+
+(comment 
+  (.getLoggers (log-impl/context))
+  (get-loggers)
+  )
+
 (defn get-appenders 
   ([] (get-appenders (log-impl/context)))
   ([^LoggerContext context]
-   (let [config (-> context
-                    (.getConfiguration))
-         logger (-> config (.getRootLogger))]
-     (-> logger
-         (.getAppenders)))))
+   (->> (get-loggers context)
+        (mapcat (fn [l] (.getAppenders l))))))
 
 (defn remove-all-appenders
   ([] (remove-all-appenders (log-impl/context)))
   ([^LoggerContext context]
    (doseq [[n _] (get-appenders context)]
-     (println "removing.." n)
-     (.removeAppender logger n))))
-
-(defn get-loggers [context]
-  (-> (vec (.getLoggers context))
-      (conj (.getRootLogger context))))
+     (.info status-logger (str "removing.." n))
+     (.removeAppender ^Logger logger ^String n))))
 
 (defn add-appender-to-running-context
   ([appender] (add-appender-to-running-context appender (log-impl/context)))
   ([^Appender appender ^LoggerContext context]
-   (do
-     (.start appender)
-     (-> (.getConfiguration context)
-         (.addAppender appender))
+   (.start appender)
+   (-> (.getConfiguration context)
+       (.addAppender appender))
+   (let [appender-from-ctx (-> (.getConfiguration context)
+                               (.getAppender (.getName appender)))]
      (doseq [logger (get-loggers context)]
-       (.addAppender logger (-> (.getConfiguration context)
-                           (.getAppender (.getName appender)))))
-     (.updateLoggers context))))
+       (.info status-logger (str "adding appender to " (.getName logger)))
+       (.addAppender logger appender-from-ctx)))
+   (.updateLoggers context)))
+
 
 (defn context->data
   ([] (context->data (log-impl/context)))
