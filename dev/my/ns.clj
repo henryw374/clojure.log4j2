@@ -17,6 +17,9 @@
     (log/with-throwable *e)
     (log/log "foo"))
 
+; change log level to trace
+(log/set-level 'my.ns :trace)
+
 (ns my.ns
   (:require [com.widdindustries.log4j2.config :as config]))
 

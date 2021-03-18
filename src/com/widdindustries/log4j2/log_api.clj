@@ -1,7 +1,8 @@
 (ns com.widdindustries.log4j2.log-api
-  (:require [com.widdindustries.log4j2.log-impl :as impl])
+  (:require [com.widdindustries.log4j2.log-impl :as impl]
+            [clojure.string :as str])
   (:import [org.apache.logging.log4j.message Message MapMessage]
-           [org.apache.logging.log4j LogBuilder Level Marker]
+           [org.apache.logging.log4j LogBuilder Level Marker LogManager]
            [org.apache.logging.log4j.util Supplier]
            (java.util Map)))
 
@@ -59,3 +60,11 @@
 (defmacro trace 
   ([thing] `(log (impl/log-builder Level/TRACE) ~thing))
   ([thing & more] `(log (impl/log-builder Level/TRACE) ~thing [~@more])))
+
+(defn set-level [logger-name level]
+  (let [ctx ^org.apache.logging.log4j.core.LoggerContext (impl/context)]
+    (-> ctx 
+        (.getConfiguration)
+        (.getLoggerConfig (str logger-name))
+        (.setLevel (Level/valueOf (str/upper-case (name level)))))
+    (.updateLoggers ctx)))

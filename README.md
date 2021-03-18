@@ -67,6 +67,10 @@ compelling reasons to move away from what I consider the safe choice of log4j2.
     (log/with-throwable *e)
     ; finally log string or Message etc
     (log/log {"foo" "bar"}))
+
+; change log level to trace
+(log/set-level 'my.ns :trace)
+
 ```
 ## Config
 
