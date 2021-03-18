@@ -29,6 +29,17 @@ functions are stringified before calling the underlying impl so it is not suitab
 
 The same limitation also exists in pedestal.log
 
+## But what about...
+
+### Timbre
+
+I haven't used that personally. It might be great, others seem less keen - see Clojureverse thread below for example.
+
+### Mulog
+
+Feature-wise that seems to be the same as log4j2, so to consider that I'd be looking for some
+compelling reasons to move away from what I consider the safe choice of log4j2.
+
 # Usage
 
 ## Logging 
@@ -47,7 +58,7 @@ The same limitation also exists in pedestal.log
 ;clojure maps wrapped in MapMessage object
 (log/info {"foo" "bar"})
 
-; varargs formatted string
+; varargs for formatted string only
 (log/info "hello {} there" :foo)
 
 ; builder - include throwable|marker|location
