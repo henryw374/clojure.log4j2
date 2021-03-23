@@ -7,6 +7,7 @@
 
 ;log a Message (data)
 (log/info (MapMessage. {"foo" "bar"}))
+(log/error  {:foo "bar"})
 
 ; varargs formatted string
 (log/info "hello {} there" :foo)

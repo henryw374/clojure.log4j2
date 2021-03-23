@@ -55,10 +55,10 @@ compelling reasons to move away from what I consider the safe choice of log4j2.
 ;log a Message - this is how you 'log data'
 (log/info (MapMessage. {"foo" "bar"}))
 
-;clojure maps wrapped in MapMessage object
+;clojure maps wrapped in MapMessage object - top level keys must be Named (string, keyword, symbol etc)
 (log/info {"foo" "bar"})
 
-; varargs for formatted string only
+; varargs arity is for formatted string only
 (log/info "hello {} there" :foo)
 
 ; builder - include throwable|marker|location
