@@ -26,7 +26,8 @@ created directly from the data, not a string representation of it.
 through many java logging systems including log4j2. However, the args to log
 functions are stringified before calling the underlying impl so it is not suitable for logging data.
 
-The same limitation also exists in pedestal.log and [cambium](https://github.com/cambium-clojure)
+The same limitation (that log events have been stringified before 
+reaching appenders) also exists in pedestal.log and [cambium](https://github.com/cambium-clojure)
 
 ## But what about...
 
