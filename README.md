@@ -1,11 +1,10 @@
 # clojure.log4j2
 
-When clojure.tools.logging is not enough
-
+sugar for using log4j2 from clojure
 
 [![Clojars Project](https://img.shields.io/clojars/v/com.widdindustries/clojure.log4j2.svg)](https://clojars.org/com.widdindustries/clojure.log4j2)
 
-# Features
+# Features (of log4j2 mainly)
 
 * legacy Java logging libs work, so JUL,JCL,log4j etc etc all get logged with the same config
 * log data (clojure maps & [more](https://logging.apache.org/log4j/2.x/manual/messages.html)). and optionally strings
@@ -27,13 +26,13 @@ created directly from the data, not a string representation of it.
 through many java logging systems including log4j2. However, the args to log
 functions are stringified before calling the underlying impl so it is not suitable for logging data.
 
-The same limitation also exists in pedestal.log
+The same limitation also exists in pedestal.log and [cambium](https://github.com/cambium-clojure)
 
 ## But what about...
 
 ### Timbre
 
-I haven't used that personally. It might be great, others seem less keen - see Clojureverse thread below for example.
+Feature-wise this seem similar. It's not uncommon to hear reports of people moving off it for various reasons though - see Clojureverse thread below for example.
 
 ### Mulog
 
