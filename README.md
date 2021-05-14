@@ -97,6 +97,13 @@ Configure logger before logging
 
 ```
 
+### Plugins
+
+To create your own Appenders & etc Log4j2 allows the creation of [Plugins](https://logging.apache.org/log4j/2.x/manual/plugins.html)
+which are annotated Java classes. I'm not sure how those would be possible to create with Clojure, but
+the alternative is to use programmatic configuration and pass log4j2 instances of special Appenders
+etc created via clojure's `proxy` for example.
+
 ## Release
 
 create a git tag.
