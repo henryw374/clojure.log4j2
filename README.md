@@ -49,14 +49,14 @@ compelling reasons to move away from what I consider the safe choice of log4j2.
   (:require [com.widdindustries.log4j2.log-api :as log])
   (:import [org.apache.logging.log4j.message MapMessage]))
 
-;log string
+;clojure maps wrapped in MapMessage object - top level keys must be Named (string, keyword, symbol etc)
+(log/info {"foo" "bar"})
+
+;log a string
 (log/info "hello")
 
 ;log a Message - this is how you 'log data'
 (log/info (MapMessage. {"foo" "bar"}))
-
-;clojure maps wrapped in MapMessage object - top level keys must be Named (string, keyword, symbol etc)
-(log/info {"foo" "bar"})
 
 ; varargs arity is for formatted string only
 (log/info "hello {} there" :foo)
@@ -95,6 +95,27 @@ Configure logger before logging
         ;(.writeXmlConfiguration  System/out)
         (config/start))))
 
+```
+
+## Testing 
+
+In order to test your log messages 
+
+```clojure 
+(ns foo 
+(:require [com.widdindustries.log4j2.testing :as testing])
+(def state (-> (testing/setup-recording-context) testing/context-state))
+(log/info {"foo" "bar"})
+@state
+
+=> 
+
+[{:mdc {},
+  :logger "com.widdindustries.log4j2.testing",
+  :message {"foo" "bar"},
+  :level #object[org.apache.logging.log4j.Level 0x40f1e3ff "INFO"],
+  :throwable nil,
+  :thread-name "nREPL-session-c7822df9-316d-4368-bb06-cdc3e407508e"}]
 ```
 
 ### Plugins

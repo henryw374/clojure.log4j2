@@ -58,12 +58,12 @@
    (->> (get-loggers context)
         (mapcat (fn [l] (.getAppenders l))))))
 
-(defn remove-all-appenders
+#_(defn remove-all-appenders
   ([] (remove-all-appenders (log-impl/context)))
   ([^LoggerContext context]
    (doseq [[n _] (get-appenders context)]
      (.info status-logger (str "removing.." n))
-     (.removeAppender ^Logger logger ^String n))))
+     (.removeAppender context ^Logger logger ^String n))))
 
 (defn add-appender-to-running-context
   ([appender] (add-appender-to-running-context appender (log-impl/context)))
