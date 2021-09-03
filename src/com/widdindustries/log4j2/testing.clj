@@ -17,7 +17,7 @@
                   (if (instance? MapMessage message)
                     (.getData ^MapMessage message)
                     message))
-   :level       (.getLevel event)
+   :level       (log/level->kw (.getLevel event))
    :throwable   (.getThrown event)
    :thread-name (.getThreadName event)})
 

@@ -1,12 +1,26 @@
 (ns com.widdindustries.log4j2.log-api
   (:require [com.widdindustries.log4j2.log-impl :as impl]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [clojure.set :as set])
   (:import [org.apache.logging.log4j.message Message MapMessage]
            [org.apache.logging.log4j LogBuilder Level Marker LogManager]
            [org.apache.logging.log4j.util Supplier]
            (java.util Map)))
 
 (set! *warn-on-reflection* true)
+
+(def kw->level
+  {:trace Level/TRACE 
+   :all Level/ALL 
+   :error Level/ERROR 
+   :info Level/INFO 
+   :fatal Level/FATAL 
+   :debug Level/DEBUG 
+   :off Level/OFF 
+   :warn Level/WARN})
+
+(def level->kw  
+  (set/map-invert kw->level))
 
 (defmacro fatal-builder [] `(impl/log-builder Level/FATAL))
 (defmacro error-builder [] `(impl/log-builder Level/ERROR))
