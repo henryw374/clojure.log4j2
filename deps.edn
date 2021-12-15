@@ -1,6 +1,6 @@
 {:paths ["src"]
- :deps {org.apache.logging.log4j/log4j-api {:mvn/version "2.15.0"}
-        org.apache.logging.log4j/log4j-core {:mvn/version "2.15.0"}}
+ :deps {org.apache.logging.log4j/log4j-api {:mvn/version "2.16.0"}
+        org.apache.logging.log4j/log4j-core {:mvn/version "2.16.0"}}
  :aliases {:dev {:extra-paths ["dev"]}
            :release     {:extra-deps {applied-science/deps-library {:mvn/version "RELEASE"}}
                          :main-opts  ["-m" "applied-science.deps-library"]}}}
