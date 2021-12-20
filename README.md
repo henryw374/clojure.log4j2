@@ -38,7 +38,7 @@ Feature-wise this seem similar. It's not uncommon to hear reports of people movi
 ### Mulog
 
 Feature-wise that seems to be the same as log4j2, so to consider that I'd be looking for some
-compelling reasons to move away from what I consider the safe choice of log4j2.
+compelling reasons to move away from what I consider the safe choice (haha!) of log4j2.
 
 # Usage
 
