@@ -27,7 +27,7 @@ through many java logging systems including log4j2. However, the args to log
 functions are stringified before calling the underlying impl so it is not suitable for logging data.
 
 The same limitation (that log events have been stringified before 
-reaching appenders) also exists in pedestal.log and [cambium](https://github.com/cambium-clojure)
+reaching appenders) also exists in pedestal.log and [cambium](https://github.com/cambium-clojure) and [seancorfield/logging4j2](https://github.com/seancorfield/logging4j2) & etc
 
 ## But what about...
 
@@ -37,8 +37,11 @@ Feature-wise this seem similar. It's not uncommon to hear reports of people movi
 
 ### Mulog
 
-Feature-wise that seems to be the same as log4j2, so to consider that I'd be looking for some
-compelling reasons to move away from what I consider the safe choice (haha!) of log4j2.
+Feature-wise that seems to be similar to log4j2, certainly worth a look.
+
+### [Telemere](https://github.com/taoensso/telemere)
+
+didnt exist when this was written. probably worth a look. see [comparison to mulog](https://github.com/taoensso/telemere/wiki/6-FAQ#how-does-telemere-compare-to-%CE%BClog)
 
 # Usage
 
